@@ -73,12 +73,12 @@ resource "azurerm_app_service_plan" "gocloudops" {
 
 # Azure OpenAI
 resource "azurerm_cognitive_account" "openai" {
-  name                = "gocloudops-openai"
+  name                = "gocloudops-a-openai"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
   kind                = "OpenAI"
   sku_name            = "S0"
-  custom_subdomain_name = "gocloudops-openai"
+  custom_subdomain_name = "gocloudops-a-openai"
   
 }
 
