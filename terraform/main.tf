@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "rg" {
   name     = "rg-search-app"
-  location = "East US"
+  location = "East US 2"
 }
 
 resource "azurerm_service_plan" "plan" {
