@@ -70,7 +70,7 @@ resource "azurerm_app_service_plan" "gocloudops" {
   reserved = true  # Required for Linux/Python
 }
 
-# Azure OpenAI
+# Azure OpenAI Cognitive Account
 resource "azurerm_cognitive_account" "openai" {
   name                = "gocloudops-openai"
   location            = azurerm_resource_group.gocloudops.location
@@ -80,46 +80,39 @@ resource "azurerm_cognitive_account" "openai" {
   custom_subdomain_name = "gocloudops-openai"
 }
 
-resource "azurerm_cognitive_deployment" "gpt4omini" {
-  name                 = "gpt4omini"
+# Deployment using a supported model
+resource "azurerm_cognitive_deployment" "gpt35" {
+  name                 = "gpt35-turbo"
   cognitive_account_id = azurerm_cognitive_account.openai.id
 
-  sku {                             # <-- New required block
-    name     = "Standard"           # name is required
-    capacity = 1                     # capacity is optional, but you normally set it
-    # You could also put "family" or "size" or "tier" if supported, but name + capacity is often enough
+  sku {
+    name     = "Standard"
+    capacity = 1
   }
 
   model {
     format  = "OpenAI"
-    name    = "gpt-4o-mini"
-    version = "2024-08-06"
+    name    = "gpt-35-turbo"
+    # Optional: version can be omitted if not required, or set a supported one
   }
-
-  # Remove the old scale block:
-  # scale {
-  #   type     = "Standard"
-  #   capacity = 1
-  # }
 }
 
-
-# App Service (Python)
+# App Service for Flask / Python
 resource "azurerm_app_service" "gocloudops" {
   name                = "gocloudops-app-service"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
-  app_service_plan_id = azurerm_app_service_plan.gocloudops.id
+  app_service_plan_id = azurerm_service_plan.gocloudops.id
 
   site_config {
     linux_fx_version = "PYTHON|3.11"
-    scm_type       = "LocalGit"
+    scm_type         = "LocalGit"
   }
 
   app_settings = {
     "AZURE_OPENAI_ENDPOINT"    = azurerm_cognitive_account.openai.endpoint
     "AZURE_OPENAI_API_KEY"     = azurerm_cognitive_account.openai.primary_access_key
-    "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt4omini.name
+    "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt35.name
   }
 }
 
