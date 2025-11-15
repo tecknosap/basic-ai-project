@@ -66,8 +66,9 @@ resource "azurerm_app_service_plan" "gocloudops" {
     tier = "Standard"
     size = "S1"
   }
+  kind     = "Linux"     # Explicitly set to Linux
+  reserved = true        # Required for Linux
 
-  reserved = true  # Required for Linux/Python
 }
 
 # Azure OpenAI
@@ -78,6 +79,7 @@ resource "azurerm_cognitive_account" "openai" {
   kind                = "OpenAI"
   sku_name            = "S0"
   custom_subdomain_name = "gocloudops-openai"
+  
 }
 
 resource "azurerm_cognitive_deployment" "gpt4omini" {
