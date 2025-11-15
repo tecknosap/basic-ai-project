@@ -122,3 +122,5 @@ resource "azurerm_app_service" "gocloudops" {
     "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt4omini.name
   }
 }
+
+
