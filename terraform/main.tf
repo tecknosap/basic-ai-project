@@ -70,7 +70,7 @@ resource "azurerm_app_service_plan" "gocloudops" {
   reserved = true  # Required for Linux/Python
 }
 
-# Azure OpenAI Cognitive Account
+# Azure OpenAI
 resource "azurerm_cognitive_account" "openai" {
   name                = "gocloudops-openai"
   location            = azurerm_resource_group.gocloudops.location
@@ -80,40 +80,39 @@ resource "azurerm_cognitive_account" "openai" {
   custom_subdomain_name = "gocloudops-openai"
 }
 
-# Deployment using a supported model
-resource "azurerm_cognitive_deployment" "gpt35" {
-  name                 = "gpt35-turbo"
+resource "azurerm_cognitive_deployment" "gpt4omini" {
+  name                 = "gpt4omini"
   cognitive_account_id = azurerm_cognitive_account.openai.id
-
-  sku {
-    name     = "Standard"
-    capacity = 1
-  }
 
   model {
     format  = "OpenAI"
-    name    = "gpt-35-turbo"
-    # Optional: version can be omitted if not required, or set a supported one
+    name    = "gpt-4o-mini"
+    version = "2024-08-06"
   }
+
+  sku {
+    name     = "S0"
+    capacity = 1
+  }
+
+
 }
 
-# App Service for Flask / Python
+# App Service (Python)
 resource "azurerm_app_service" "gocloudops" {
   name                = "gocloudops-app-service"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
-  app_service_plan_id = azurerm_service_plan.gocloudops.id
+  app_service_plan_id = azurerm_app_service_plan.gocloudops.id
 
   site_config {
-    linux_fx_version = "PYTHON|3.11"
-    scm_type         = "LocalGit"
+    python_version = "3.11"
+    scm_type       = "LocalGit"
   }
 
   app_settings = {
     "AZURE_OPENAI_ENDPOINT"    = azurerm_cognitive_account.openai.endpoint
     "AZURE_OPENAI_API_KEY"     = azurerm_cognitive_account.openai.primary_access_key
-    "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt35.name
+    "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt4omini.name
   }
 }
-
-
