@@ -112,7 +112,7 @@ resource "azurerm_app_service" "gocloudops" {
   app_service_plan_id = azurerm_app_service_plan.gocloudops.id
 
   site_config {
-    python_version = "3.11"
+    linux_fx_version = "PYTHON|3.11"
     scm_type       = "LocalGit"
   }
 
