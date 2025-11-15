@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-search-app-01"
+  name     = "rg-search-app-011"
   location = "East US 2"
 }
 
