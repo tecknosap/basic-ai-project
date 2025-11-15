@@ -91,7 +91,7 @@ resource "azurerm_cognitive_deployment" "gpt4omini" {
   }
 
   sku {
-    name     = "S0"
+    name     = "Standard"
     capacity = 1
   }
 
