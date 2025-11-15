@@ -121,3 +121,5 @@ resource "azurerm_app_service" "gocloudops" {
 
 
 
+
+
