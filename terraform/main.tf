@@ -82,7 +82,6 @@ resource "azurerm_cognitive_account" "openai" {
   
 }
 
-
 resource "azurerm_cognitive_deployment" "gpt4omini" {
   name                 = "gpt4omini"
   cognitive_account_id = azurerm_cognitive_account.openai.id
