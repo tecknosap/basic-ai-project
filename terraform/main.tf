@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-search-app"
+  name     = "rg-search-app-01"
   location = "East US 2"
 }
 
@@ -29,4 +29,3 @@ resource "azurerm_linux_web_app" "webapp" {
   }
 }
 
-#
