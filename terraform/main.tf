@@ -8,7 +8,7 @@ resource "azurerm_service_plan" "plan" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   sku_name            = "B1"
-  os_type             = "Linux"  # ✅ Required for Linux Web Apps
+  os_type             = "Linux"
 }
 
 resource "azurerm_linux_web_app" "webapp" {
@@ -18,6 +18,13 @@ resource "azurerm_linux_web_app" "webapp" {
   service_plan_id     = azurerm_service_plan.plan.id
 
   site_config {
-    linux_fx_version = "PYTHON|3.10"
+    # Removed linux_fx_version
+    always_on = true
+  }
+
+  # Set Python version via app_settings
+  app_settings = {
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+    "PYTHON_VERSION"                      = "3.10"
   }
 }
