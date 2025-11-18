@@ -45,6 +45,8 @@ resource "azurerm_app_service" "gocloudops" {
 }
 
 
+
+
 # provider "azurerm" {
 #   subscription_id = var.subscription_id
 #   features {}
