@@ -16,12 +16,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "gocloudops" {
-  name     = "gocloudops-resources + ${random_id.suffix.hex}"
+  name     =  "${var.resource_group_name}+ ${random_id.suffix.hex}"
   location = "West Europe"
 }
 
 resource "azurerm_app_service_plan" "gocloudops" {
-  name                = "gocloudops-appserviceplan + ${random_id.suffix.hex}"
+  name                = "${var.app_service_plan}+ ${random_id.suffix.hex}"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
 
@@ -32,7 +32,7 @@ resource "azurerm_app_service_plan" "gocloudops" {
 }
 
 resource "azurerm_app_service" "gocloudops" {
-  name                = "gocloudops-app-service + ${random_id.suffix.hex}"
+  name                =  "${var.app_service}+ ${random_id.suffix.hex}"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
   app_service_plan_id = azurerm_app_service_plan.gocloudops.id
