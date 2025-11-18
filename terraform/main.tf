@@ -1,3 +1,12 @@
+# =====================================================
+# Random ID generation for unique suffix
+# =====================================================
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+
+
 provider "azurerm" {
   # Configuration options
   subscription_id = var.subscription_id
@@ -7,12 +16,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "gocloudops" {
-  name     = "gocloudops-resources"
+  name     = "gocloudops-resources + ${random_id.suffix.hex}"
   location = "West Europe"
 }
 
 resource "azurerm_app_service_plan" "gocloudops" {
-  name                = "gocloudops-appserviceplan"
+  name                = "gocloudops-appserviceplan + ${random_id.suffix.hex}"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
 
@@ -23,7 +32,7 @@ resource "azurerm_app_service_plan" "gocloudops" {
 }
 
 resource "azurerm_app_service" "gocloudops" {
-  name                = "gocloudops-app-service"
+  name                = "gocloudops-app-service + ${random_id.suffix.hex}"
   location            = azurerm_resource_group.gocloudops.location
   resource_group_name = azurerm_resource_group.gocloudops.name
   app_service_plan_id = azurerm_app_service_plan.gocloudops.id
@@ -43,84 +52,6 @@ resource "azurerm_app_service" "gocloudops" {
     value = "Server=some-server.mydomain.com;Integrated Security=SSPI"
   }
 }
-
-
-
-
-# provider "azurerm" {
-#   subscription_id = var.subscription_id
-#   features {}
-# }
-
-# # Resource Group
-# resource "azurerm_resource_group" "gocloudops" {
-#   name     = "gocloudops-resources"
-#   location = "West Europe"
-# }
-
-# # App Service Plan
-# resource "azurerm_app_service_plan" "gocloudops" {
-#   name                = "gocloudops-appserviceplan"
-#   location            = azurerm_resource_group.gocloudops.location
-#   resource_group_name = azurerm_resource_group.gocloudops.name
-
-#   sku {
-#     tier = "Standard"
-#     size = "S1"
-#   }
-#   kind     = "Linux"     # Explicitly set to Linux
-#   reserved = true        # Required for Linux
-
-# }
-
-# # Azure OpenAI
-# resource "azurerm_cognitive_account" "openai" {
-#   name                = "gocloudops-a-openai"
-#   location            = azurerm_resource_group.gocloudops.location
-#   resource_group_name = azurerm_resource_group.gocloudops.name
-#   kind                = "OpenAI"
-#   sku_name            = "S0"
-#   custom_subdomain_name = "gocloudops-a-openai"
-  
-# }
-
-# resource "azurerm_cognitive_deployment" "gpt4omini" {
-#   name                 = "gpt4omini"
-#   cognitive_account_id = azurerm_cognitive_account.openai.id
-
-#   model {
-#     format  = "OpenAI"
-#     name    = "gpt-4o-mini"
-#     version = "2024-08-06"
-#   }
-
-#   sku {
-#     name     = "Standard"
-#     capacity = 1
-#   }
-
-
-# }
-
-# # App Service (Python)
-# resource "azurerm_app_service" "gocloudops" {
-#   name                = "gocloudops-app-service"
-#   location            = azurerm_resource_group.gocloudops.location
-#   resource_group_name = azurerm_resource_group.gocloudops.name
-#   app_service_plan_id = azurerm_app_service_plan.gocloudops.id
-
-#   site_config {
-#     linux_fx_version = "PYTHON|3.11"
-#     scm_type       = "LocalGit"
-#   }
-
-#   app_settings = {
-#     "AZURE_OPENAI_ENDPOINT"    = azurerm_cognitive_account.openai.endpoint
-#     "AZURE_OPENAI_API_KEY"     = azurerm_cognitive_account.openai.primary_access_key
-#     "AZURE_OPENAI_DEPLOYMENT"  = azurerm_cognitive_deployment.gpt4omini.name
-#   }
-# }
-
 
 
 
